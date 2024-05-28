@@ -1,24 +1,19 @@
 import { View, Text, FlatList, StyleSheet, TextInput, Button, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import React, {useState, useEffect} from 'react'
+import AlumnoDetail from './AlumnoDetail';
+import FetchAlumnoHook from '../../Hooks/FetchAlumnoHook';
 
-const Crud = () => {
-    const [alumnos, setAlumnos] = useState([]);
+const Crud = ({navigation}) => {
+    
+    const {setAlumnos, alumnos, fetchAlumno} = FetchAlumnoHook();
     const [nombre, setNombre] = useState('');
     const [apellido, setApellido] = useState('');
-
+    
     useEffect(() => {
         fetchAlumno();
     }, [])
 
-    const fetchAlumno = async () => {
-        try {
-            const response = await fetch('http://192.168.100.7:3000/alumnos/');
-            const data = await response.json();
-            setAlumnos(data)
-        } catch (error) {
-            console.error(error) 
-        }
-    }
+   
 
     const createAlumno = async () => {
       try {
@@ -76,7 +71,9 @@ const Crud = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <ScrollView>
-            <Text>{item.nombre} {item.apellido}</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('AlumnoDetail', { alumno: item, onUpdt: fetchAlumno })}>
+            <Text style={{fontSize: 30, textAlign: 'center'}}>{item.nombre} {item.apellido}</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={style.buttonCancel} onPress={() => confirmDelete(item.id)}>
               <Text>Eliminar</Text>
             </TouchableOpacity>
