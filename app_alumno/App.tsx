@@ -5,8 +5,7 @@ import Crud from './src/screen/Crud';
 export default function App() {
   return (
     <View style={styles.container}>
-    <Image source={require('./assets/favicon.png')} />
-    <Text>Alumnos Disponibles</Text>
+    <Image source={require('./assets/favicon.png')} style={{marginTop: 90}}/>
     <Crud/>
       <StatusBar style="auto" />
     </View>
