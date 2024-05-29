@@ -1,12 +1,15 @@
-import { View, Text, StyleSheet, TextInput, Alert, Button } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Alert, Button, FlatList, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
+import FetchAlumnoHook from '../../Hooks/FetchAlumnoHook';
+import { useFocusEffect } from '@react-navigation/native';
 
 const AlumnoDetail = ({ route, navigation }) => {
+    const { setAsignatura, asignatura, fetchAsignatura } = FetchAlumnoHook(); ``
     const { alumno, onUpdt } = route.params;
     const [nombre, setNombre] = useState(alumno.nombre)
     const [apellido, setApellido] = useState(alumno.apellido)
 
- 
+
     const updAlumno = async () => {
         try {
             const response = await fetch(`http://192.168.100.7:3000/alumnos/${alumno.id}`, {
@@ -14,7 +17,7 @@ const AlumnoDetail = ({ route, navigation }) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-               body: JSON.stringify({ nombre, apellido }),
+                body: JSON.stringify({ nombre, apellido }),
             });
             if (response.ok) {
                 Alert.alert('Actualizado', 'Alumno actualizado con éxito!');
@@ -25,7 +28,7 @@ const AlumnoDetail = ({ route, navigation }) => {
             }
 
         } catch (error) {
-          Alert.alert('Algo a Ocurrido!', 'Error al actualizar al alumno')  
+            Alert.alert('Algo a Ocurrido!', 'Error al actualizar al alumno')
         }
     }
 
@@ -34,7 +37,17 @@ const AlumnoDetail = ({ route, navigation }) => {
             <Text style={style.text}>{alumno.nombre}</Text>
             <Text style={style.text}>{alumno.apellido}</Text>
 
-           <Text style={style.label}>EDITAR ALUMNO</Text>
+            <FlatList
+                data={asignatura}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <ScrollView>
+                        <Text style={style.text}>{item.asignatura_nombre}</Text>
+                    </ScrollView>
+                )}
+            />
+
+            <Text style={style.label}>EDITAR ALUMNO</Text>
             <TextInput
                 value={nombre}
                 onChangeText={setNombre}
@@ -47,7 +60,7 @@ const AlumnoDetail = ({ route, navigation }) => {
                 style={style.input}
                 placeholder='Nombre del Alumno' />
 
-                <Button title='Actualizar alumno' onPress={updAlumno}></Button>
+            <Button title='Actualizar alumno' onPress={updAlumno}></Button>
 
         </View>
     )
